@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Reading Manifesto</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c5f2d;
+            --secondary-color: #97bc62;
+            --accent-color: #6a994e;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--bg-color);
+        }
+
+        /* Header */
+        .header {
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Progress Summary */
+        .progress-summary {
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            padding: 0 2rem;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+
+        /* Books Grid */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Book Card */
+        .book-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .book-cover-container {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .book-info {
+            padding: 1.5rem;
+        }
+
+        .book-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .book-author {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .book-blurb {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        /* Progress Tracker */
+        .progress-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .pledge-btn {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            background: var(--secondary-color);
+            color: var(--text-primary);
+            border: 2px solid var(--secondary-color);
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .pledge-btn:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .pledge-btn.pledged {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .progress-tracker {
+            display: none;
+        }
+
+        .progress-tracker.active {
+            display: block;
+        }
+
+        .progress-input-group {
+            margin-bottom: 1rem;
+        }
+
+        .progress-input-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border-color);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .progress-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .progress-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            border: none;
+        }
+
+        .progress-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .progress-percentage {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--card-bg);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            margin-top: 4rem;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 1rem 1rem;
+            }
+
+            .progress-summary {
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header .subtitle {
+                font-size: 1rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+        }
+
+        /* Accessibility */
+        button:focus,
+        input:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>📚 2026 Reading Manifesto</h1>
+        <p class="subtitle">A pledge to deepen understanding in AI ethics, causality, cognition, and learning science</p>
+    </header>
+
+    <div class="progress-summary">
+        <div class="summary-stats">
+            <div class="stat-card">
+                <div class="stat-value" id="total-progress">0%</div>
+                <div class="stat-label">Overall Progress</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="books-completed">0/6</div>
+                <div class="stat-label">Books Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="books-pledged">0/6</div>
+                <div class="stat-label">Books Pledged</div>
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+        <div id="books-grid" class="books-grid"></div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Reading Pledge. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Book Data
+        const books = [
+            {
+                id: 1,
+                title: "The Alignment Problem",
+                author: "Brian Christian",
+                cover: "https://covers.openlibrary.org/b/isbn/9780393635829-L.jpg",
+                blurb: "Connects machine learning objectives, bias, and social impact—strongly aligned with ethics, children's safety, and platform-governance work.",
+                gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+            },
+            {
+                id: 2,
+                title: "The Book of Why",
+                author: "Judea Pearl & Dana Mackenzie",
+                cover: "https://covers.openlibrary.org/b/isbn/9780465097609-L.jpg",
+                blurb: "Sharpens causal intuition for experiments, falsification tests, and identification strategies in IS and analytics research.",
+                gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+            },
+            {
+                id: 3,
+                title: "Visual Thinking",
+                author: "Temple Grandin",
+                cover: "https://covers.openlibrary.org/b/isbn/9780593418369-L.jpg",
+                blurb: "Foundational theory for visuals, cognition, and perception—very relevant to personalized-visuals and learning agenda.",
+                gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
+            },
+            {
+                id: 4,
+                title: "A Thousand Brains",
+                author: "Jeff Hawkins",
+                cover: "https://covers.openlibrary.org/b/isbn/9781541675810-L.jpg",
+                blurb: "Neuroscience-inspired theory of intelligence that pairs well with fMRI decoding and mechanistic interpretability work.",
+                gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)"
+            },
+            {
+                id: 5,
+                title: "Programmed Inequality",
+                author: "Mar Hicks",
+                cover: "https://covers.openlibrary.org/b/isbn/9780262035545-L.jpg",
+                blurb: "Historical, structural view of bias in technology—excellent context for gender, children, and platform research.",
+                gradient: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)"
+            },
+            {
+                id: 6,
+                title: "How Learning Happens",
+                author: "Paul A. Kirschner & Carl Hendrick",
+                cover: "https://covers.openlibrary.org/b/isbn/9780367184575-L.jpg",
+                blurb: "Evidence-based learning science grounding for cognitive load, instruction, and personalization claims.",
+                gradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)"
+            }
+        ];
+
+        // State Management
+        let bookData = {};
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBookData();
+            renderBooks();
+            updateSummary();
+        });
+
+        // Data Management
+        function loadBookData() {
+            const stored = localStorage.getItem('readingManifestoData');
+            if (stored) {
+                bookData = JSON.parse(stored);
+            }
+        }
+
+        function saveBookData() {
+            localStorage.setItem('readingManifestoData', JSON.stringify(bookData));
+        }
+
+        // Book Rendering
+        function renderBooks() {
+            const container = document.getElementById('books-grid');
+            container.innerHTML = '';
+            
+            books.forEach(book => {
+                const card = createBookCard(book);
+                container.appendChild(card);
+            });
+        }
+
+        function createBookCard(book) {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            
+            const bookInfo = bookData[book.id] || { pledged: false, progress: 0 };
+            const isPledged = bookInfo.pledged;
+            const progress = bookInfo.progress;
+            
+            card.innerHTML = `
+                <div class="book-cover-container" style="background: ${book.gradient}">
+                    <img src="${book.cover}" alt="${book.title} cover" class="book-cover" loading="lazy">
+                </div>
+                <div class="book-info">
+                    <h3 class="book-title">${book.title}</h3>
+                    <p class="book-author">by ${book.author}</p>
+                    <p class="book-blurb">${book.blurb}</p>
+                    
+                    <div class="progress-section">
+                        <button class="pledge-btn ${isPledged ? 'pledged' : ''}" data-book-id="${book.id}">
+                            ${isPledged ? '✓ Pledged to Read' : 'Pledge to Read'}
+                        </button>
+                        
+                        <div class="progress-tracker ${isPledged ? 'active' : ''}" id="tracker-${book.id}">
+                            <div class="progress-input-group">
+                                <label for="slider-${book.id}">Reading Progress</label>
+                                <input 
+                                    type="range" 
+                                    id="slider-${book.id}" 
+                                    class="progress-slider" 
+                                    min="0" 
+                                    max="100" 
+                                    value="${progress}"
+                                    data-book-id="${book.id}"
+                                >
+                                <div class="progress-display">
+                                    <span>Progress:</span>
+                                    <span class="progress-percentage" id="percentage-${book.id}">${progress}%</span>
+                                </div>
+                            </div>
+                            
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="bar-${book.id}" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners
+            const pledgeBtn = card.querySelector('.pledge-btn');
+            pledgeBtn.addEventListener('click', () => togglePledge(book.id));
+            
+            if (isPledged) {
+                const slider = card.querySelector('.progress-slider');
+                slider.addEventListener('input', (e) => updateProgress(book.id, parseInt(e.target.value)));
+            }
+            
+            return card;
+        }
+
+        // Progress Management
+        function togglePledge(bookId) {
+            if (!bookData[bookId]) {
+                bookData[bookId] = { pledged: false, progress: 0 };
+            }
+            
+            bookData[bookId].pledged = !bookData[bookId].pledged;
+            
+            if (!bookData[bookId].pledged) {
+                bookData[bookId].progress = 0;
+            }
+            
+            saveBookData();
+            renderBooks();
+            updateSummary();
+        }
+
+        function updateProgress(bookId, progress) {
+            if (!bookData[bookId]) {
+                bookData[bookId] = { pledged: true, progress: 0 };
+            }
+            
+            bookData[bookId].progress = progress;
+            
+            // Update UI immediately
+            document.getElementById(`percentage-${bookId}`).textContent = `${progress}%`;
+            document.getElementById(`bar-${bookId}`).style.width = `${progress}%`;
+            
+            saveBookData();
+            updateSummary();
+        }
+
+        // Summary Statistics
+        function updateSummary() {
+            const bookIds = Object.keys(bookData);
+            
+            const pledgedBooks = bookIds.filter(id => bookData[id].pledged).length;
+            const completedBooks = bookIds.filter(id => bookData[id].progress === 100).length;
+            
+            let totalProgress = 0;
+            bookIds.forEach(id => {
+                if (bookData[id].pledged) {
+                    totalProgress += bookData[id].progress;
+                }
+            });
+            const avgProgress = pledgedBooks > 0 ? Math.round(totalProgress / pledgedBooks) : 0;
+            
+            document.getElementById('total-progress').textContent = `${avgProgress}%`;
+            document.getElementById('books-completed').textContent = `${completedBooks}/6`;
+            document.getElementById('books-pledged').textContent = `${pledgedBooks}/6`;
+        }
+    </script>
+</body>
+</html>
